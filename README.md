@@ -141,6 +141,19 @@ Then run:
 docker compose up -d
 ```
 
+## Grafana dashboard
+
+If you're using Prometheus with Grafana, a ready-to-import dashboard is provided at `grafana-dashboard.json`.
+
+### Importing into Grafana
+
+1. In Grafana, go to Dashboards → Import.
+2. Upload the `grafana-dashboard.json` file (or paste its JSON).
+3. When prompted, select your Prometheus data source.
+4. Click Import.
+
+The dashboard visualizes the exported metrics listed above and should work once Prometheus is scraping this exporter.
+
 ### Common operations
 
 - Logs:
