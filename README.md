@@ -9,6 +9,8 @@ Huge thanks to the ADSBee project ([GitHub](https://github.com/CoolNamesAllTaken
 
 This is a lightweight Prometheus exporter that consumes ADSBee metrics from a WebSocket and exposes them on an HTTP endpoint for Prometheus scraping.
 
+Prebuilt Docker image on Docker Hub: [bigjuevos/adsbee-metrics-exporter](https://hub.docker.com/r/bigjuevos/adsbee-metrics-exporter) — see the repository page: [Docker Hub repository page](https://hub.docker.com/repository/docker/bigjuevos/adsbee-metrics-exporter/general).
+
 ### Input JSON example
 
 ```
@@ -67,10 +69,10 @@ Prometheus metrics will be available at `http://localhost:9100/` (path `/metrics
 
 ## Docker
 
-Build:
+Pull (recommended):
 
 ```
-docker build -t adsbee-metrics-exporter:latest .
+docker pull bigjuevos/adsbee-metrics-exporter:latest
 ```
 
 Run:
@@ -79,12 +81,18 @@ Run:
 docker run --rm -p 9100:9100 \
   -e WS_URL="ws://host.docker.internal:8080/metrics" \
   -e EXPORTER_PORT=9100 \
-  adsbee-metrics-exporter:latest
+  bigjuevos/adsbee-metrics-exporter:latest
+```
+
+Build locally (optional):
+
+```
+docker build -t adsbee-metrics-exporter:latest .
 ```
 
 ## Docker Compose
 
-This repository includes a `docker-compose.yml` to build and run the exporter easily.
+This repository includes a `docker-compose.yml` that pulls the published image by default. To build locally instead, uncomment the `build` section inside `docker-compose.yml`.
 
 ### Quick start
 
