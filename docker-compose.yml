@@ -1,0 +1,22 @@
+services:
+  adsbee-metrics-exporter:
+    image: adsbee-metrics-exporter:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adsbee-metrics-exporter
+    restart: unless-stopped
+    environment:
+      # Change this to point at your ADSBee WebSocket endpoint
+      - WS_URL=${WS_URL:-ws://host.docker.internal:8080/metrics}
+      # Port the exporter listens on inside the container
+      - EXPORTER_PORT=${EXPORTER_PORT:9100}
+      - LOG_LEVEL=${LOG_LEVEL:INFO}
+      # Optional tuning
+      - RECONNECT_MIN_SECONDS=${RECONNECT_MIN_SECONDS:1}
+      - RECONNECT_MAX_SECONDS=${RECONNECT_MAX_SECONDS:30}
+      - CONNECT_TIMEOUT_SECONDS=${CONNECT_TIMEOUT_SECONDS:10}
+      - RECEIVE_TIMEOUT_SECONDS=${RECEIVE_TIMEOUT_SECONDS:30}
+    ports:
+      # HostPort:ContainerPort
+      - "${EXPORTER_PORT:9100}:9100"
