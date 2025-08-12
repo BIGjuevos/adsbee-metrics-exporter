@@ -9,7 +9,7 @@ Huge thanks to the ADSBee project ([GitHub](https://github.com/CoolNamesAllTaken
 
 This is a lightweight Prometheus exporter that consumes ADSBee metrics from a WebSocket and exposes them on an HTTP endpoint for Prometheus scraping.
 
-Prebuilt Docker image on Docker Hub: [bigjuevos/adsbee-metrics-exporter](https://hub.docker.com/r/bigjuevos/adsbee-metrics-exporter) — see the repository page: [Docker Hub repository page](https://hub.docker.com/repository/docker/bigjuevos/adsbee-metrics-exporter/general).
+Prebuilt Docker image on Docker Hub: [bigjuevos/adsbee-metrics-exporter](https://hub.docker.com/r/bigjuevos/adsbee-metrics-exporter) — see the repository page: [Docker Hub repository page](https://hub.docker.com/repository/docker/bigjuevos/adsbee-metrics-exporter).
 
 ### Input JSON example
 
@@ -61,7 +61,7 @@ Environment variables:
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-export WS_URL="ws://localhost:8080/metrics"
+export WS_URL="ws://your-adsbee-host:80/metrics"
 python exporter.py
 ```
 
@@ -79,7 +79,7 @@ Run:
 
 ```
 docker run --rm -p 9100:9100 \
-  -e WS_URL="ws://host.docker.internal:8080/metrics" \
+  -e WS_URL="ws://your-adsbee-host:80/metrics" \
   -e EXPORTER_PORT=9100 \
   bigjuevos/adsbee-metrics-exporter:latest
 ```
@@ -113,7 +113,7 @@ You can configure the exporter by setting environment variables before running c
 - Inline environment variables:
 
 ```bash
-WS_URL="ws://host.docker.internal:8080/metrics" \
+WS_URL="ws://your-adsbee-host:80/metrics" \
 EXPORTER_PORT=9100 \
 docker compose up -d
 ```
@@ -122,7 +122,7 @@ docker compose up -d
 
 ```env
 # WebSocket source for ADSBee metrics
-WS_URL=ws://host.docker.internal:8080/metrics
+WS_URL=ws://your-adsbee-host:80/metrics
 
 # Host port to expose (container always listens on 9100)
 EXPORTER_PORT=9100
@@ -145,6 +145,8 @@ docker compose up -d
 
 If you're using Prometheus with Grafana, a ready-to-import dashboard is provided at `grafana-dashboard.json`.
 
+![Example Grafana dashboard](images/grafana.png)
+
 ### Importing into Grafana
 
 1. In Grafana, go to Dashboards → Import.
@@ -153,28 +155,3 @@ If you're using Prometheus with Grafana, a ready-to-import dashboard is provided
 4. Click Import.
 
 The dashboard visualizes the exported metrics listed above and should work once Prometheus is scraping this exporter.
-
-### Common operations
-
-- Logs:
-
-```bash
-docker compose logs -f adsbee-metrics-exporter
-```
-
-- Rebuild after code changes:
-
-```bash
-docker compose up -d --build
-```
-
-- Stop and remove:
-
-```bash
-docker compose down
-```
-
-## Notes
-
-- `server_metrics.feed_uri` and `server_metrics.feed_mps` are treated as matched arrays; only non-empty `feed_uri` entries are exported with corresponding `feed_mps`.
-- The exporter performs exponential backoff on reconnect between `RECONNECT_MIN_SECONDS` and `RECONNECT_MAX_SECONDS`.
