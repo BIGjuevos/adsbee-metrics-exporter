@@ -53,15 +53,20 @@
     "links": [],
     "panels": [
       {
+        "collapsed": false,
+        "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+        "id": 100,
+        "title": "Aircraft Metrics",
+        "type": "row"
+      },
+      {
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -73,67 +78,34 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
-              "lineStyle": {
-                "fill": "solid"
-              },
+              "lineStyle": { "fill": "solid" },
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 0,
-          "y": 0
-        },
+        "gridPos": { "h": 8, "w": 8, "x": 0, "y": 1 },
         "id": 4,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
@@ -147,10 +119,7 @@
             "range": true,
             "refId": "A",
             "useBackend": false,
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            }
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
           }
         ],
         "title": "raw_squitter_frames",
@@ -163,9 +132,7 @@
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -177,64 +144,33 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 8,
-          "y": 0
-        },
+        "gridPos": { "h": 8, "w": 8, "x": 8, "y": 1 },
         "id": 3,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
@@ -248,10 +184,7 @@
             "range": true,
             "refId": "A",
             "useBackend": false,
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            }
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
           }
         ],
         "title": "valid_squitter_frames",
@@ -264,9 +197,7 @@
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -278,64 +209,33 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 16,
-          "y": 0
-        },
+        "gridPos": { "h": 8, "w": 8, "x": 16, "y": 1 },
         "id": 5,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
@@ -349,10 +249,7 @@
             "range": true,
             "refId": "A",
             "useBackend": false,
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            }
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
           }
         ],
         "title": "raw_extended_squitter_frames",
@@ -365,9 +262,7 @@
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -379,64 +274,33 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 8
-        },
+        "gridPos": { "h": 8, "w": 8, "x": 0, "y": 9 },
         "id": 6,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
@@ -450,10 +314,7 @@
             "range": true,
             "refId": "A",
             "useBackend": false,
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            }
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
           }
         ],
         "title": "valid_extended_squitter_frames",
@@ -466,9 +327,7 @@
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -480,72 +339,38 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 12,
-          "y": 8
-        },
+        "gridPos": { "h": 8, "w": 8, "x": 8, "y": 9 },
         "id": 1,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
           {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            },
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
             "disableTextWrap": false,
             "editorMode": "builder",
             "expr": "adsbee_demods_1090_current",
@@ -568,9 +393,7 @@
         },
         "fieldConfig": {
           "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
+            "color": { "mode": "palette-classic" },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -582,67 +405,219 @@
               "drawStyle": "line",
               "fillOpacity": 50,
               "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
               "insertNulls": false,
               "lineInterpolation": "smooth",
-              "lineStyle": {
-                "fill": "solid"
-              },
               "lineWidth": 1,
               "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
+              "scaleDistribution": { "type": "linear" },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
               ]
             }
           },
           "overrides": []
         },
-        "gridPos": {
-          "h": 8,
-          "w": 24,
-          "x": 0,
-          "y": 16
+        "gridPos": { "h": 8, "w": 8, "x": 16, "y": 9 },
+        "id": 10,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_num_mode_s_aircraft_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "Mode S",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          },
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_num_uat_aircraft_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "UAT",
+            "range": true,
+            "refId": "B",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "Aircraft Count",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 17 },
+        "id": 11,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+        },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_raw_uat_adsb_frames_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "Raw UAT ADS-B",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          },
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_valid_uat_adsb_frames_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "Valid UAT ADS-B",
+            "range": true,
+            "refId": "B",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          },
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_raw_uat_uplink_frames_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "Raw UAT Uplink",
+            "range": true,
+            "refId": "C",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          },
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_valid_uat_uplink_frames_current",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "Valid UAT Uplink",
+            "range": true,
+            "refId": "D",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "UAT Frames",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": { "h": 1, "w": 24, "x": 0, "y": 25 },
+        "id": 101,
+        "title": "Feed Rates",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": { "fill": "solid" },
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 26 },
         "id": 2,
         "options": {
-          "legend": {
-            "calcs": [],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
         },
         "pluginVersion": "11.5.1",
         "targets": [
@@ -656,13 +631,296 @@
             "range": true,
             "refId": "A",
             "useBackend": false,
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            }
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
           }
         ],
         "title": "feed_mps",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": false,
+        "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
+        "id": 102,
+        "title": "Device Status",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "unit": "s",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 35 },
+        "id": 20,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+        },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_device_uptime_seconds",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "{{device}}",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "Device Uptime",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "unit": "percent",
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "orange", "value": 70 },
+                { "color": "red", "value": 90 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 35 },
+        "id": 21,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+        },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_device_core_usage_percent",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "{{device}} core {{core}}",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "CPU Core Usage",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "unit": "celsius",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "orange", "value": 60 },
+                { "color": "red", "value": 80 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 43 },
+        "id": 22,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+        },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_device_temperature_deg_c",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "{{device}}",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "Device Temperature",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 50,
+              "gradientMode": "none",
+              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": { "type": "linear" },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": { "group": "A", "mode": "none" },
+              "thresholdsStyle": { "mode": "off" }
+            },
+            "mappings": [],
+            "unit": "bytes",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "red", "value": 80 }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 43 },
+        "id": 23,
+        "options": {
+          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true },
+          "tooltip": { "hideZeros": false, "mode": "single", "sort": "none" }
+        },
+        "pluginVersion": "11.5.1",
+        "targets": [
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_device_heap_free_bytes",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "{{device}} heap free",
+            "range": true,
+            "refId": "A",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          },
+          {
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "adsbee_device_heap_largest_free_block_bytes",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "legendFormat": "{{device}} largest free block",
+            "range": true,
+            "refId": "B",
+            "useBackend": false,
+            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+          }
+        ],
+        "title": "ESP32 Heap",
         "type": "timeseries"
       }
     ],
@@ -680,6 +938,6 @@
     "timezone": "browser",
     "title": "ADSBee",
     "uid": "feuqsqwd545xcd",
-    "version": 4,
+    "version": 5,
     "weekStart": ""
   }
