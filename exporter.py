@@ -176,16 +176,13 @@ class AdsbeeMetricsExporter:
                 self.device_heap_largest_free_block_gauge.labels(device=device_name).set(
                     int(device_data["heap_largest_free_block_bytes"])
                 )
-            core_usage = device_data.get("core_usage_percent")
-            if isinstance(core_usage, list):
-                for i, usage in enumerate(core_usage):
-                    self.device_core_usage_gauge.labels(device=device_name, core=str(i)).set(
-                        float(usage)
-                    )
-            elif isinstance(core_usage, dict):
-                for core_name, usage in core_usage.items():
-                    self.device_core_usage_gauge.labels(device=device_name, core=core_name).set(
-                        float(usage)
+            # Handle per-core usage keys like core_0_usage_percent,
+            # core_1_usage_percent, and user_core_usage_percent.
+            for key, value in device_data.items():
+                if key.endswith("_usage_percent") and "core" in key:
+                    core_label = key.removesuffix("_usage_percent")
+                    self.device_core_usage_gauge.labels(device=device_name, core=core_label).set(
+                        float(value)
                     )
 
     def _update_server_metrics(self, server_metrics: Dict[str, Any]) -> None:
