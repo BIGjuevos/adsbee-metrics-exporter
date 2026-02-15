@@ -14,34 +14,75 @@ Prebuilt Docker image on Docker Hub: [bigjuevos/adsbee-metrics-exporter](https:/
 ### Input JSON example
 
 ```
-{ 
-  "aircraft_dictionary_metrics": { 
+{
+  "aircraft_dictionary_metrics": {
     "raw_squitter_frames": 84,
     "valid_squitter_frames": 4,
     "raw_extended_squitter_frames": 82,
     "valid_extended_squitter_frames": 18,
     "demods_1090": 192,
+    "raw_uat_adsb_frames": 10,
+    "valid_uat_adsb_frames": 5,
+    "raw_uat_uplink_frames": 3,
+    "valid_uat_uplink_frames": 1,
+    "num_mode_s_aircraft": 12,
+    "num_uat_aircraft": 2,
     "raw_squitter_frames_by_source": [0, 0, 0],
     "valid_squitter_frames_by_source": [0, 0, 0],
     "raw_extended_squitter_frames_by_source": [0, 0, 0],
     "valid_extended_squitter_frames_by_source": [0, 2, 0],
     "demods_1090_by_source": [0, 0, 0]
   },
-  "server_metrics": { 
+  "server_metrics": {
     "feed_uri": ["", "", "", "", "", "", "feed.whereplane.xyz", "feed.adsb.lol", "feed.airplanes.live", "feed.adsb.fi"],
     "feed_mps": [0, 0, 0, 0, 0, 0, 23, 0, 23, 0]
+  },
+  "device_status": {
+    "rp2040": {
+      "uptime_ms": 123456789,
+      "core_usage_percent": [45.2, 30.1],
+      "temperature_deg_c": 42.5
+    },
+    "esp32": {
+      "uptime_ms": 123456000,
+      "core_usage_percent": [55.0, 40.0],
+      "temperature_deg_c": 48.3,
+      "heap_free_bytes": 102400,
+      "heap_largest_free_block_bytes": 65536
+    }
   }
 }
 ```
 
 ### Exported metrics
 
+**Aircraft dictionary metrics:**
+
 - `adsbee_raw_squitter_frames_current` (Gauge)
 - `adsbee_valid_squitter_frames_current` (Gauge)
 - `adsbee_raw_extended_squitter_frames_current` (Gauge)
 - `adsbee_valid_extended_squitter_frames_current` (Gauge)
 - `adsbee_demods_1090_current` (Gauge)
+- `adsbee_raw_uat_adsb_frames_current` (Gauge)
+- `adsbee_valid_uat_adsb_frames_current` (Gauge)
+- `adsbee_raw_uat_uplink_frames_current` (Gauge)
+- `adsbee_valid_uat_uplink_frames_current` (Gauge)
+- `adsbee_num_mode_s_aircraft_current` (Gauge)
+- `adsbee_num_uat_aircraft_current` (Gauge)
+
+**Server metrics:**
+
 - `adsbee_feed_mps{feed_uri}` (Gauge) — exported only for non-empty `feed_uri` entries
+
+**Device status metrics** (labeled by `device` — e.g. `rp2040`, `subg`, `esp32`):
+
+- `adsbee_device_uptime_seconds{device}` (Gauge) — uptime converted from ms to seconds
+- `adsbee_device_core_usage_percent{device, core}` (Gauge) — CPU core usage
+- `adsbee_device_temperature_deg_c{device}` (Gauge) — temperature in degrees Celsius
+- `adsbee_device_heap_free_bytes{device}` (Gauge) — heap free bytes (esp32 only)
+- `adsbee_device_heap_largest_free_block_bytes{device}` (Gauge) — largest free block (esp32 only)
+
+All new metrics are backwards-compatible: old firmware payloads that omit the new fields will simply not populate these gauges.
 
 ## Configuration
 

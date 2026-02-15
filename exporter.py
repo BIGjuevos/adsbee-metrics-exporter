@@ -60,13 +60,64 @@ class AdsbeeMetricsExporter:
             "Latest absolute value for 1090 demods.",
         )
 
+        # New aircraft dictionary metrics (UAT frames and aircraft counts)
+        self.raw_uat_adsb_frames_gauge = Gauge(
+            "adsbee_raw_uat_adsb_frames_current",
+            "Latest absolute value for raw UAT ADS-B frames.",
+        )
+        self.valid_uat_adsb_frames_gauge = Gauge(
+            "adsbee_valid_uat_adsb_frames_current",
+            "Latest absolute value for valid UAT ADS-B frames.",
+        )
+        self.raw_uat_uplink_frames_gauge = Gauge(
+            "adsbee_raw_uat_uplink_frames_current",
+            "Latest absolute value for raw UAT uplink frames.",
+        )
+        self.valid_uat_uplink_frames_gauge = Gauge(
+            "adsbee_valid_uat_uplink_frames_current",
+            "Latest absolute value for valid UAT uplink frames.",
+        )
+        self.num_mode_s_aircraft_gauge = Gauge(
+            "adsbee_num_mode_s_aircraft_current",
+            "Latest absolute value for number of Mode S aircraft.",
+        )
+        self.num_uat_aircraft_gauge = Gauge(
+            "adsbee_num_uat_aircraft_current",
+            "Latest absolute value for number of UAT aircraft.",
+        )
+
         self.feed_mps_gauge = Gauge(
             "adsbee_feed_mps",
             "Messages per second per upstream feed URI.",
             labelnames=("feed_uri",),
         )
 
-        # No operational Prometheus metrics; only domain metrics are exported
+        # Device status metrics (labeled by device name)
+        self.device_uptime_gauge = Gauge(
+            "adsbee_device_uptime_seconds",
+            "Device uptime in seconds.",
+            labelnames=("device",),
+        )
+        self.device_core_usage_gauge = Gauge(
+            "adsbee_device_core_usage_percent",
+            "Device CPU core usage percent.",
+            labelnames=("device", "core"),
+        )
+        self.device_temperature_gauge = Gauge(
+            "adsbee_device_temperature_deg_c",
+            "Device temperature in degrees Celsius.",
+            labelnames=("device",),
+        )
+        self.device_heap_free_gauge = Gauge(
+            "adsbee_device_heap_free_bytes",
+            "Device heap free bytes.",
+            labelnames=("device",),
+        )
+        self.device_heap_largest_free_block_gauge = Gauge(
+            "adsbee_device_heap_largest_free_block_bytes",
+            "Device largest free heap block in bytes.",
+            labelnames=("device",),
+        )
 
     @staticmethod
     def _get_optional_float(value: Optional[str]) -> Optional[float]:
@@ -90,6 +141,52 @@ class AdsbeeMetricsExporter:
         if "demods_1090" in metrics:
             value = int(metrics["demods_1090"])
             self.demods_1090_gauge.set(value)
+        if "raw_uat_adsb_frames" in metrics:
+            self.raw_uat_adsb_frames_gauge.set(int(metrics["raw_uat_adsb_frames"]))
+        if "valid_uat_adsb_frames" in metrics:
+            self.valid_uat_adsb_frames_gauge.set(int(metrics["valid_uat_adsb_frames"]))
+        if "raw_uat_uplink_frames" in metrics:
+            self.raw_uat_uplink_frames_gauge.set(int(metrics["raw_uat_uplink_frames"]))
+        if "valid_uat_uplink_frames" in metrics:
+            self.valid_uat_uplink_frames_gauge.set(int(metrics["valid_uat_uplink_frames"]))
+        if "num_mode_s_aircraft" in metrics:
+            self.num_mode_s_aircraft_gauge.set(int(metrics["num_mode_s_aircraft"]))
+        if "num_uat_aircraft" in metrics:
+            self.num_uat_aircraft_gauge.set(int(metrics["num_uat_aircraft"]))
+
+    def _update_device_status(self, device_status: Dict[str, Any]) -> None:
+        if not device_status:
+            return
+        for device_name, device_data in device_status.items():
+            if not isinstance(device_data, dict):
+                continue
+            if "uptime_ms" in device_data:
+                self.device_uptime_gauge.labels(device=device_name).set(
+                    float(device_data["uptime_ms"]) / 1000.0
+                )
+            if "temperature_deg_c" in device_data:
+                self.device_temperature_gauge.labels(device=device_name).set(
+                    float(device_data["temperature_deg_c"])
+                )
+            if "heap_free_bytes" in device_data:
+                self.device_heap_free_gauge.labels(device=device_name).set(
+                    int(device_data["heap_free_bytes"])
+                )
+            if "heap_largest_free_block_bytes" in device_data:
+                self.device_heap_largest_free_block_gauge.labels(device=device_name).set(
+                    int(device_data["heap_largest_free_block_bytes"])
+                )
+            core_usage = device_data.get("core_usage_percent")
+            if isinstance(core_usage, list):
+                for i, usage in enumerate(core_usage):
+                    self.device_core_usage_gauge.labels(device=device_name, core=str(i)).set(
+                        float(usage)
+                    )
+            elif isinstance(core_usage, dict):
+                for core_name, usage in core_usage.items():
+                    self.device_core_usage_gauge.labels(device=device_name, core=core_name).set(
+                        float(usage)
+                    )
 
     def _update_server_metrics(self, server_metrics: Dict[str, Any]) -> None:
         if not server_metrics:
@@ -114,12 +211,16 @@ class AdsbeeMetricsExporter:
 
         aircraft_metrics = payload.get("aircraft_dictionary_metrics") or {}
         server_metrics = payload.get("server_metrics") or {}
+        device_status = payload.get("device_status") or {}
 
         if aircraft_metrics:
             self._update_gauges_from_absolute(aircraft_metrics)
 
         if server_metrics:
             self._update_server_metrics(server_metrics)
+
+        if device_status:
+            self._update_device_status(device_status)
 
     async def run_forever(self) -> None:
         start_http_server(self.exporter_port)
