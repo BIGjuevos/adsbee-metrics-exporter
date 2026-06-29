@@ -36,6 +36,16 @@ class AdsbeeMetricsExporter:
         self.receive_timeout_seconds: Optional[float] = self._get_optional_float(
             os.environ.get("RECEIVE_TIMEOUT_SECONDS", "30")
         )
+        # The firmware's /metrics WebSocket server prunes any client that has
+        # not sent an application-level (data) frame within its inactivity
+        # timeout (90s). Protocol-level ping/pong frames do NOT count. Send a
+        # periodic data-frame heartbeat well under that window, mirroring the
+        # official web dashboard (which sends "ping" every 60s). Set to None to
+        # disable.
+        self.heartbeat_interval_seconds: Optional[float] = self._get_optional_float(
+            os.environ.get("HEARTBEAT_INTERVAL_SECONDS", "30")
+        )
+        self.heartbeat_message: str = os.environ.get("HEARTBEAT_MESSAGE", "ping")
 
         # Prometheus metrics (aircraft metrics as gauges only)
 
@@ -219,6 +229,47 @@ class AdsbeeMetricsExporter:
         if device_status:
             self._update_device_status(device_status)
 
+    async def _send_heartbeats(self, ws) -> None:
+        """Periodically send an application-level data frame so the firmware's
+        per-client inactivity timer keeps getting reset."""
+        while True:
+            await asyncio.sleep(self.heartbeat_interval_seconds)
+            await ws.send(self.heartbeat_message)
+
+    async def _consume_connection(self, ws) -> None:
+        heartbeat_task = (
+            asyncio.create_task(self._send_heartbeats(ws))
+            if self.heartbeat_interval_seconds
+            else None
+        )
+        try:
+            while True:
+                try:
+                    message = await asyncio.wait_for(
+                        ws.recv(), timeout=self.receive_timeout_seconds
+                    ) if self.receive_timeout_seconds else await ws.recv()
+                except asyncio.TimeoutError:
+                    logging.warning("Receive timeout; attempting to ping and continue")
+                    try:
+                        await ws.ping()
+                    except Exception:
+                        logging.warning("Ping failed; breaking to reconnect")
+                        break
+                    continue
+                except websockets.ConnectionClosed:
+                    logging.warning("WebSocket connection closed; will reconnect")
+                    break
+                await self._handle_single_message(message)
+        finally:
+            if heartbeat_task is not None:
+                heartbeat_task.cancel()
+                try:
+                    await heartbeat_task
+                except (asyncio.CancelledError, websockets.ConnectionClosed):
+                    # Expected during teardown (cancellation, or a heartbeat
+                    # send that raced a closing socket); don't mask reconnect.
+                    pass
+
     async def run_forever(self) -> None:
         start_http_server(self.exporter_port)
         logging.info("Prometheus exporter listening on port %d", self.exporter_port)
@@ -231,23 +282,7 @@ class AdsbeeMetricsExporter:
                     logging.info("WebSocket connected")
                     # Reset backoff after a successful connection
                     backoff_seconds = self.reconnect_min_seconds
-                    while True:
-                        try:
-                            message = await asyncio.wait_for(
-                                ws.recv(), timeout=self.receive_timeout_seconds
-                            ) if self.receive_timeout_seconds else await ws.recv()
-                        except asyncio.TimeoutError:
-                            logging.warning("Receive timeout; attempting to ping and continue")
-                            try:
-                                await ws.ping()
-                            except Exception:
-                                logging.warning("Ping failed; breaking to reconnect")
-                                break
-                            continue
-                        except websockets.ConnectionClosed:
-                            logging.warning("WebSocket connection closed; will reconnect")
-                            break
-                        await self._handle_single_message(message)
+                    await self._consume_connection(ws)
             except Exception as exc:
                 logging.error("WebSocket connection error: %s", exc)
 
