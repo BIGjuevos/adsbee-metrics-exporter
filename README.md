@@ -94,6 +94,8 @@ Environment variables:
 - `RECONNECT_MAX_SECONDS` (default: `30`): Max reconnect backoff.
 - `CONNECT_TIMEOUT_SECONDS` (default: `10`): WebSocket connect timeout.
 - `RECEIVE_TIMEOUT_SECONDS` (default: `30`, set to `None` to disable): Receive timeout; on timeout, the exporter pings and continues or reconnects if ping fails.
+- `HEARTBEAT_INTERVAL_SECONDS` (default: `30`, set to `None` to disable): How often to send an application-level heartbeat message to the device. The ADSBee firmware's `/metrics` WebSocket server prunes any client that has not sent a *data* frame within its 90s inactivity timeout (protocol-level WebSocket pings do not count). Keep this comfortably below 90s; the default 30s mirrors the official web dashboard's heartbeat.
+- `HEARTBEAT_MESSAGE` (default: `ping`): The text message sent as the heartbeat data frame.
 - `LOG_LEVEL` (default: `INFO`): Logging level.
 
 ## Running locally
