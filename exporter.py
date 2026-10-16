@@ -52,6 +52,8 @@ class AdsbeeMetricsExporter:
             os.environ.get("HEARTBEAT_INTERVAL_SECONDS", "30")
         )
         self.heartbeat_message: str = os.environ.get("HEARTBEAT_MESSAGE", "ping")
+        # Set by _consume_connection once a connection delivers a message.
+        self._connection_received_data: bool = False
         # GNSS position/motion reveals where the receiver is. Off by default so
         # the location is not stored in Prometheus unless explicitly opted in.
         self.export_gnss_location: bool = self._get_bool(
@@ -377,6 +379,7 @@ class AdsbeeMetricsExporter:
                 except websockets.ConnectionClosed:
                     logging.warning("WebSocket connection closed; will reconnect")
                     break
+                self._connection_received_data = True
                 await self._handle_single_message(message)
         finally:
             if heartbeat_task is not None:
@@ -395,14 +398,20 @@ class AdsbeeMetricsExporter:
         backoff_seconds = self.reconnect_min_seconds
         while True:
             logging.info("Connecting to WebSocket: %s", self.websocket_url)
+            self._connection_received_data = False
             try:
                 async with websockets.connect(self.websocket_url, open_timeout=self.connect_timeout_seconds) as ws:
                     logging.info("WebSocket connected")
-                    # Reset backoff after a successful connection
-                    backoff_seconds = self.reconnect_min_seconds
                     await self._consume_connection(ws)
             except Exception as exc:
                 logging.error("WebSocket connection error: %s", exc)
+
+            # Reset backoff only if the connection delivered data. When the
+            # firmware is at its client limit it accepts the handshake and then
+            # closes immediately; treating that as success would retry every
+            # reconnect_min_seconds forever and add load to an already-full device.
+            if self._connection_received_data:
+                backoff_seconds = self.reconnect_min_seconds
 
             # Reconnect with exponential backoff
             logging.info("Reconnecting in %.1f seconds", backoff_seconds)
