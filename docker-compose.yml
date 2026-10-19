@@ -17,6 +17,8 @@ services:
       - RECONNECT_MAX_SECONDS=${RECONNECT_MAX_SECONDS:-30}
       - CONNECT_TIMEOUT_SECONDS=${CONNECT_TIMEOUT_SECONDS:-10}
       - RECEIVE_TIMEOUT_SECONDS=${RECEIVE_TIMEOUT_SECONDS:-30}
+      # Export GNSS position/motion (reveals receiver location)
+      - EXPORT_GNSS_LOCATION=${EXPORT_GNSS_LOCATION:-false}
     ports:
       # HostPort:ContainerPort
       - "${EXPORTER_PORT:-9100}:9100"

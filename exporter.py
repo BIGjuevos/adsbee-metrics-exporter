@@ -24,7 +24,13 @@ class AdsbeeMetricsExporter:
         adsbee_demods_1090
     - Gauges for server feed rates:
         adsbee_feed_mps{feed_uri}
-    
+    - Gauges for per-source receiver counts:
+        adsbee_<metric>_by_source_current{source}
+    - Gauges for device status (noise floor, temperature, ...):
+        adsbee_device_*{device}
+    - Gauges for GNSS status, plus location gauges when
+      EXPORT_GNSS_LOCATION is enabled:
+        adsbee_gnss_*
     """
 
     def __init__(self) -> None:
@@ -46,6 +52,13 @@ class AdsbeeMetricsExporter:
             os.environ.get("HEARTBEAT_INTERVAL_SECONDS", "30")
         )
         self.heartbeat_message: str = os.environ.get("HEARTBEAT_MESSAGE", "ping")
+        # Set by _consume_connection once a connection delivers a message.
+        self._connection_received_data: bool = False
+        # GNSS position/motion reveals where the receiver is. Off by default so
+        # the location is not stored in Prometheus unless explicitly opted in.
+        self.export_gnss_location: bool = self._get_bool(
+            os.environ.get("EXPORT_GNSS_LOCATION", "false")
+        )
 
         # Prometheus metrics (aircraft metrics as gauges only)
 
@@ -96,6 +109,36 @@ class AdsbeeMetricsExporter:
             "Latest absolute value for number of UAT aircraft.",
         )
 
+        # Remote ID (drone) metrics
+        self.raw_remote_id_frames_gauge = Gauge(
+            "adsbee_raw_remote_id_frames_current",
+            "Latest absolute value for raw Remote ID frames.",
+        )
+        self.valid_remote_id_frames_gauge = Gauge(
+            "adsbee_valid_remote_id_frames_current",
+            "Latest absolute value for valid Remote ID frames.",
+        )
+        self.num_remote_id_aircraft_gauge = Gauge(
+            "adsbee_num_remote_id_aircraft_current",
+            "Latest absolute value for number of Remote ID aircraft (drones).",
+        )
+
+        # Per-source receiver metrics, keyed by the payload array name
+        self.by_source_gauges: Dict[str, Gauge] = {
+            key: Gauge(
+                f"adsbee_{key}_current",
+                f"Latest absolute value for {key.removesuffix('_by_source').replace('_', ' ')} per source.",
+                labelnames=("source",),
+            )
+            for key in (
+                "raw_squitter_frames_by_source",
+                "valid_squitter_frames_by_source",
+                "raw_extended_squitter_frames_by_source",
+                "valid_extended_squitter_frames_by_source",
+                "demods_1090_by_source",
+            )
+        }
+
         self.feed_mps_gauge = Gauge(
             "adsbee_feed_mps",
             "Messages per second per upstream feed URI.",
@@ -128,12 +171,54 @@ class AdsbeeMetricsExporter:
             "Device largest free heap block in bytes.",
             labelnames=("device",),
         )
+        self.device_noise_floor_dbm_gauge = Gauge(
+            "adsbee_device_noise_floor_dbm",
+            "Device 1090 receiver noise floor in dBm.",
+            labelnames=("device",),
+        )
+        self.device_noise_floor_mv_gauge = Gauge(
+            "adsbee_device_noise_floor_mv",
+            "Device 1090 receiver noise floor RSSI voltage in millivolts.",
+            labelnames=("device",),
+        )
+
+        # GNSS status metrics (always exported; reveal no location)
+        self.gnss_enabled_gauge = Gauge(
+            "adsbee_gnss_enabled",
+            "Whether the GNSS receiver is enabled (1) or not (0).",
+        )
+        self.gnss_fix_valid_gauge = Gauge(
+            "adsbee_gnss_fix_valid",
+            "Whether the GNSS receiver has a valid fix (1) or not (0).",
+        )
+        self.gnss_num_satellites_gauge = Gauge(
+            "adsbee_gnss_num_satellites",
+            "Number of GNSS satellites in use.",
+        )
+
+        # GNSS location metrics (only created when EXPORT_GNSS_LOCATION is on)
+        self.gnss_location_gauges: Dict[str, Gauge] = {}
+        if self.export_gnss_location:
+            self.gnss_location_gauges = {
+                key: Gauge(f"adsbee_gnss_{key}", description)
+                for key, description in (
+                    ("latitude_deg", "GNSS latitude in degrees."),
+                    ("longitude_deg", "GNSS longitude in degrees."),
+                    ("altitude_ft", "GNSS altitude in feet."),
+                    ("heading_deg", "GNSS heading in degrees."),
+                    ("speed_kts", "GNSS ground speed in knots."),
+                )
+            }
 
     @staticmethod
     def _get_optional_float(value: Optional[str]) -> Optional[float]:
         if value is None or value == "" or value.lower() == "none":
             return None
         return float(value)
+
+    @staticmethod
+    def _get_bool(value: Optional[str]) -> bool:
+        return (value or "").strip().lower() in ("1", "true", "yes", "on")
 
     def _update_gauges_from_absolute(self, metrics: Dict[str, Any]) -> None:
         if "raw_squitter_frames" in metrics:
@@ -163,12 +248,39 @@ class AdsbeeMetricsExporter:
             self.num_mode_s_aircraft_gauge.set(int(metrics["num_mode_s_aircraft"]))
         if "num_uat_aircraft" in metrics:
             self.num_uat_aircraft_gauge.set(int(metrics["num_uat_aircraft"]))
+        if "raw_remote_id_frames" in metrics:
+            self.raw_remote_id_frames_gauge.set(int(metrics["raw_remote_id_frames"]))
+        if "valid_remote_id_frames" in metrics:
+            self.valid_remote_id_frames_gauge.set(int(metrics["valid_remote_id_frames"]))
+        if "num_remote_id_aircraft" in metrics:
+            self.num_remote_id_aircraft_gauge.set(int(metrics["num_remote_id_aircraft"]))
+        for key, gauge in self.by_source_gauges.items():
+            values = metrics.get(key)
+            if not isinstance(values, list):
+                continue
+            for source, value in enumerate(values):
+                gauge.labels(source=str(source)).set(int(value))
+
+    def _update_gnss(self, gnss: Dict[str, Any]) -> None:
+        if "enabled" in gnss:
+            self.gnss_enabled_gauge.set(1 if gnss["enabled"] else 0)
+        if "fix_valid" in gnss:
+            self.gnss_fix_valid_gauge.set(1 if gnss["fix_valid"] else 0)
+        if "num_satellites" in gnss:
+            self.gnss_num_satellites_gauge.set(int(gnss["num_satellites"]))
+        for key, gauge in self.gnss_location_gauges.items():
+            if key in gnss:
+                gauge.set(float(gnss[key]))
 
     def _update_device_status(self, device_status: Dict[str, Any]) -> None:
         if not device_status:
             return
         for device_name, device_data in device_status.items():
             if not isinstance(device_data, dict):
+                continue
+            # GNSS is a receiver, not a chip; it has its own gauges.
+            if device_name == "gnss":
+                self._update_gnss(device_data)
                 continue
             if "uptime_ms" in device_data:
                 self.device_uptime_gauge.labels(device=device_name).set(
@@ -185,6 +297,14 @@ class AdsbeeMetricsExporter:
             if "heap_largest_free_block_bytes" in device_data:
                 self.device_heap_largest_free_block_gauge.labels(device=device_name).set(
                     int(device_data["heap_largest_free_block_bytes"])
+                )
+            if "noise_floor_dbm" in device_data:
+                self.device_noise_floor_dbm_gauge.labels(device=device_name).set(
+                    float(device_data["noise_floor_dbm"])
+                )
+            if "noise_floor_mv" in device_data:
+                self.device_noise_floor_mv_gauge.labels(device=device_name).set(
+                    float(device_data["noise_floor_mv"])
                 )
             # Handle per-core usage keys like core_0_usage_percent,
             # core_1_usage_percent, and user_core_usage_percent.
@@ -259,6 +379,7 @@ class AdsbeeMetricsExporter:
                 except websockets.ConnectionClosed:
                     logging.warning("WebSocket connection closed; will reconnect")
                     break
+                self._connection_received_data = True
                 await self._handle_single_message(message)
         finally:
             if heartbeat_task is not None:
@@ -277,14 +398,20 @@ class AdsbeeMetricsExporter:
         backoff_seconds = self.reconnect_min_seconds
         while True:
             logging.info("Connecting to WebSocket: %s", self.websocket_url)
+            self._connection_received_data = False
             try:
                 async with websockets.connect(self.websocket_url, open_timeout=self.connect_timeout_seconds) as ws:
                     logging.info("WebSocket connected")
-                    # Reset backoff after a successful connection
-                    backoff_seconds = self.reconnect_min_seconds
                     await self._consume_connection(ws)
             except Exception as exc:
                 logging.error("WebSocket connection error: %s", exc)
+
+            # Reset backoff only if the connection delivered data. When the
+            # firmware is at its client limit it accepts the handshake and then
+            # closes immediately; treating that as success would retry every
+            # reconnect_min_seconds forever and add load to an already-full device.
+            if self._connection_received_data:
+                backoff_seconds = self.reconnect_min_seconds
 
             # Reconnect with exponential backoff
             logging.info("Reconnecting in %.1f seconds", backoff_seconds)
